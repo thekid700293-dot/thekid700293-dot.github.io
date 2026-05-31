@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resume — Võ Thiên Khánh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050a12;
+      --bg2: #0a1221;
+      --bg3: #0f1a2e;
+      --accent: #00d4ff;
+      --accent2: #7b2fff;
+      --accent3: #ff4b6e;
+      --gold: #ffd700;
+      --text: #e8f4ff;
+      --muted: #6a8aaa;
+      --border: rgba(0,212,255,0.2);
+      --glow: 0 0 20px rgba(0,212,255,0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9999;
+      box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+      transition: transform 0.1s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,212,255,0.5); border-radius: 50%;
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: transform 0.12s;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
+      );
+      pointer-events: none; z-index: 100;
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(5,10,18,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace; font-size: 1.1rem;
+      color: var(--accent); text-shadow: var(--glow);
+      letter-spacing: 4px; text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent3); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.85rem;
+      color: var(--muted); text-decoration: none;
+      letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    /* PAGE */
+    .page {
+      padding: 8rem 4rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    /* PAGE HEADER */
+    .page-header {
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    .page-header-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem; color: var(--accent);
+      letter-spacing: 6px; margin-bottom: 0.8rem;
+    }
+    .page-header h1 {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+      letter-spacing: 4px;
+      line-height: 1;
+    }
+    .page-header-sub {
+      font-size: 1rem; color: var(--muted);
+      margin-top: 0.8rem; letter-spacing: 2px; font-weight: 300;
+    }
+    .page-header-line {
+      width: 100%; height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      margin-top: 2rem; opacity: 0.4;
+    }
+
+    /* RESUME LAYOUT */
+    .resume-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .sidebar { display: flex; flex-direction: column; gap: 2rem; }
+
+    .profile-card {
+      border: 1px solid var(--border);
+      padding: 2rem;
+      background: var(--bg2);
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+    .profile-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    }
+    .avatar {
+      width: 90px; height: 90px;
+      border: 2px solid var(--accent);
+      border-radius: 0;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Orbitron', monospace;
+      font-size: 1.8rem; font-weight: 900;
+      color: var(--accent);
+      margin: 0 auto 1.2rem;
+      position: relative;
+      clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%);
+    }
+    .profile-name {
+      font-family: 'Orbitron', monospace;
+      font-size: 1rem; font-weight: 700;
+      color: var(--text); letter-spacing: 2px; margin-bottom: 0.4rem;
+    }
+    .profile-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    .sidebar-section {
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      background: var(--bg2);
+    }
+    .sidebar-section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem; color: var(--accent);
+      letter-spacing: 4px; margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .contact-icon {
+      font-size: 1rem; width: 20px; text-align: center;
+    }
+    .contact-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+    }
+
+    /* SKILL BARS */
+    .skill-item { margin-bottom: 1rem; }
+    .skill-name {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+      letter-spacing: 2px; margin-bottom: 0.4rem;
+      display: flex; justify-content: space-between;
+    }
+    .skill-name span:last-child { color: var(--accent); }
+    .skill-bar {
+      height: 4px; background: rgba(255,255,255,0.05);
+      position: relative; overflow: hidden;
+    }
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      animation: fillBar 1.5s ease forwards;
+      transform-origin: left;
+    }
+    @keyframes fillBar {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    /* INTEREST TAGS */
+    .interest-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .interest-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; padding: 0.3rem 0.7rem;
+      border: 1px solid rgba(0,212,255,0.25);
+      color: var(--muted); letter-spacing: 1px;
+    }
+    .interest-tag.hot {
+      border-color: rgba(255,75,110,0.4);
+      color: rgba(255,75,110,0.8);
+    }
+
+    /* MAIN CONTENT */
+    .main-content { display: flex; flex-direction: column; gap: 3rem; }
+
+    .resume-section { }
+    .resume-section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.85rem; color: var(--accent);
+      letter-spacing: 4px;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .resume-section-title::before {
+      content: '';
+      width: 4px; height: 16px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    /* TIMELINE ITEM */
+    .timeline-item {
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      margin-bottom: 1rem;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .timeline-item:hover {
+      border-color: rgba(0,212,255,0.5);
+      transform: translateX(4px);
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    }
+    .timeline-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 0.5rem;
+    }
+    .timeline-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem; font-weight: 700;
+      color: var(--text); letter-spacing: 1px;
+    }
+    .timeline-date {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem; color: var(--accent);
+      letter-spacing: 2px;
+      background: rgba(0,212,255,0.08);
+      padding: 0.2rem 0.7rem;
+      border: 1px solid rgba(0,212,255,0.2);
+      white-space: nowrap;
+    }
+    .timeline-org {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem; color: var(--accent2);
+      letter-spacing: 2px; margin-bottom: 0.8rem;
+    }
+    .timeline-desc {
+      font-size: 0.88rem; color: var(--muted);
+      line-height: 1.8; font-weight: 300;
+    }
+    .timeline-desc span { color: var(--accent); font-weight: 400; }
+
+    /* PROJECT CARD */
+    .project-card {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 1.8rem;
+      margin-bottom: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .project-card:hover {
+      border-color: rgba(123,47,255,0.5);
+      transform: translateX(4px);
+    }
+    .project-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: var(--accent2);
+    }
+    .project-card::after {
+      content: attr(data-num);
+      position: absolute; right: 1.5rem; top: 1.5rem;
+      font-family: 'Orbitron', monospace;
+      font-size: 3rem; font-weight: 900;
+      color: rgba(0,212,255,0.04);
+      line-height: 1;
+    }
+    .project-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem; color: var(--text);
+      letter-spacing: 2px; margin-bottom: 0.5rem;
+    }
+    .project-desc {
+      font-size: 0.85rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 1rem; font-weight: 300;
+    }
+    .project-stack { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .stack-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; padding: 0.25rem 0.6rem;
+      background: rgba(123,47,255,0.12);
+      border: 1px solid rgba(123,47,255,0.3);
+      color: rgba(123,47,255,0.9);
+      letter-spacing: 1px;
+    }
+
+    /* STATUS BADGE */
+    .status {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem; letter-spacing: 2px;
+      padding: 0.2rem 0.6rem;
+      margin-left: 0.5rem;
+    }
+    .status.active {
+      color: #00ff88; border: 1px solid rgba(0,255,136,0.3);
+      background: rgba(0,255,136,0.05);
+    }
+    .status::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: currentColor;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    /* PRINT BUTTON */
+    .print-btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem; letter-spacing: 3px;
+      padding: 0.8rem 2rem;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      cursor: none;
+      transition: all 0.3s;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    }
+    .print-btn:hover {
+      background: rgba(0,212,255,0.1);
+      box-shadow: 0 0 20px rgba(0,212,255,0.3);
+    }
+    .header-actions {
+      display: flex; gap: 1rem; margin-top: 1.5rem;
+    }
+
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace; font-size: 0.9rem;
+      color: var(--accent); letter-spacing: 4px;
+    }
+    .footer-copy {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem; color: var(--muted); letter-spacing: 2px;
+    }
+
+    @media print {
+      body { background: white; color: black; }
+      nav, .print-btn, body::before, .bg-grid { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <div class="bg-grid"></div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">VTK<span>.</span>DEV</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="resume.html" class="active">Resume</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <p class="page-header-tag">// PERSONNEL FILE — CLASSIFIED</p>
+      <h1>CURRICULUM<br>VITAE</h1>
+      <p class="page-header-sub">Võ Thiên Khánh · Sinh viên HCMUS <span class="status active">ĐANG CẬP NHẬT</span></p>
+      <div class="page-header-line"></div>
+      <div class="header-actions">
+        <button class="print-btn" onclick="window.print()">⎙ PRINT / SAVE PDF</button>
+      </div>
+    </div>
+
+    <div class="resume-grid">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="profile-card">
+          <div class="avatar">VTK</div>
+          <div class="profile-name">VÕ THIÊN KHÁNH</div>
+          <div class="profile-title">CS STUDENT · YEAR 01</div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">CONTACT</div>
+          <div class="contact-item">
+            <span class="contact-icon">📧</span>
+            <span class="contact-text">vothienkhanh@email.com</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">🐙</span>
+            <span class="contact-text">github.com/vothienkhanh</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-icon">📍</span>
+            <span class="contact-text">Ho Chi Minh City, VN</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">TECH SKILLS</div>
+
+          <div class="skill-item">
+            <div class="skill-name"><span>C++</span><span>75%</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name"><span>Python</span><span>65%</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:65%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name"><span>HTML/CSS</span><span>70%</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name"><span>Git</span><span>50%</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:50%"></div></div>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">INTERESTS</div>
+          <div class="interest-tags">
+            <span class="interest-tag hot">🎮 Gaming</span>
+            <span class="interest-tag hot">⚔️ Anime</span>
+            <span class="interest-tag">💻 Coding</span>
+            <span class="interest-tag">🔍 Algorithms</span>
+            <span class="interest-tag">🌐 Web Dev</span>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">LANGUAGES</div>
+          <div class="skill-item">
+            <div class="skill-name"><span>Tiếng Việt</span><span>Native</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:100%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-name"><span>English</span><span>B1+</span></div>
+            <div class="skill-bar"><div class="skill-fill" style="width:60%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN -->
+      <div class="main-content">
+
+        <!-- EDUCATION -->
+        <div class="resume-section">
+          <div class="resume-section-title">EDUCATION</div>
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div class="timeline-title">Cử nhân Công nghệ Thông tin</div>
+              <div class="timeline-date">2025 — HIỆN TẠI</div>
+            </div>
+            <div class="timeline-org">ĐẠI HỌC KHOA HỌC TỰ NHIÊN · ĐHQG-HCM</div>
+            <div class="timeline-desc">
+              Năm nhất, chưa chọn chuyên ngành chính thức.<br>
+              Đang học các môn nền tảng: <span>Toán rời rạc</span>, <span>Lập trình C++</span>,
+              <span>Giải tích</span>, <span>Vật lý đại cương</span>.
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div class="timeline-title">Tốt nghiệp THPT</div>
+              <div class="timeline-date">2025</div>
+            </div>
+            <div class="timeline-org">TRƯỜNG THPT (CẬP NHẬT SAU)</div>
+            <div class="timeline-desc">
+              Hoàn thành chương trình trung học phổ thông.
+            </div>
+          </div>
+        </div>
+
+        <!-- SKILLS DETAIL -->
+        <div class="resume-section">
+          <div class="resume-section-title">TECHNICAL SKILLS</div>
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div class="timeline-title">Programming Languages</div>
+            </div>
+            <div class="timeline-desc">
+              <span>C++</span> — Lập trình hướng đối tượng, cấu trúc dữ liệu & giải thuật cơ bản.<br>
+              <span>Python</span> — Scripting, xử lý dữ liệu cơ bản, automation.<br>
+              <span>HTML / CSS</span> — Xây dựng giao diện web tĩnh, responsive design.
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-header">
+              <div class="timeline-title">Tools & Platforms</div>
+            </div>
+            <div class="timeline-desc">
+              <span>Visual Studio Code</span> · <span>Git & GitHub</span> · <span>Windows / Linux Terminal</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PROJECTS -->
+        <div class="resume-section">
+          <div class="resume-section-title">PROJECTS</div>
+
+          <div class="project-card" data-num="01">
+            <div class="project-title">GITHUB PAGES PORTFOLIO</div>
+            <div class="project-desc">
+              Xây dựng trang portfolio cá nhân và resume trực tuyến sử dụng GitHub Pages.
+              Thiết kế giao diện theo phong cách dark sci-fi / anime với HTML, CSS thuần túy.
+            </div>
+            <div class="project-stack">
+              <span class="stack-tag">HTML</span>
+              <span class="stack-tag">CSS</span>
+              <span class="stack-tag">JavaScript</span>
+              <span class="stack-tag">GitHub Pages</span>
+            </div>
+          </div>
+
+          <div class="project-card" data-num="02">
+            <div class="project-title">PROJECT #2 — COMING SOON</div>
+            <div class="project-desc">
+              Sẽ được cập nhật khi hoàn thành dự án tiếp theo. 
+              Stay tuned! ✨
+            </div>
+            <div class="project-stack">
+              <span class="stack-tag">TBD</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBJECTIVE -->
+        <div class="resume-section">
+          <div class="resume-section-title">OBJECTIVE</div>
+          <div class="timeline-item">
+            <div class="timeline-desc">
+              Là một sinh viên năm nhất đam mê công nghệ, mình mong muốn phát triển
+              kỹ năng lập trình, tham gia các dự án thực tế, và đóng góp cho cộng đồng
+              tech. Trong tương lai, mình hướng đến việc chuyên sâu vào <span>phát triển phần mềm</span>
+              hoặc <span>trí tuệ nhân tạo</span>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">VTK.DEV</div>
+    <div class="footer-copy">© 2025 VÕ THIÊN KHÁNH · LAST UPDATED: 2025</div>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = (mx - 6) + 'px';
+      cursor.style.top = (my - 6) + 'px';
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15;
+      ring.style.left = (rx - 18) + 'px'; ring.style.top = (ry - 18) + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+  </script>
+</body>
+</html>

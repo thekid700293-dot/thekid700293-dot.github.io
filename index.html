@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Võ Thiên Khánh — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@300;400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050a12;
+      --bg2: #0a1221;
+      --bg3: #0f1a2e;
+      --accent: #00d4ff;
+      --accent2: #7b2fff;
+      --accent3: #ff4b6e;
+      --gold: #ffd700;
+      --text: #e8f4ff;
+      --muted: #6a8aaa;
+      --border: rgba(0,212,255,0.2);
+      --glow: 0 0 20px rgba(0,212,255,0.4);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+      box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent);
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,212,255,0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.12s, width 0.2s, height 0.2s;
+    }
+
+    /* Scanlines overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Stars background */
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--d) infinite alternate;
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.1; }
+      100% { opacity: 0.8; }
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 4rem;
+      background: rgba(5,10,18,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.1rem;
+      color: var(--accent);
+      text-shadow: var(--glow);
+      letter-spacing: 4px;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent3); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 4rem;
+      z-index: 1;
+    }
+
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-corner {
+      position: absolute;
+      width: 80px; height: 80px;
+    }
+    .hero-corner.tl { top: 8rem; left: 4rem; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+    .hero-corner.tr { top: 8rem; right: 4rem; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+    .hero-corner.bl { bottom: 4rem; left: 4rem; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); }
+    .hero-corner.br { bottom: 4rem; right: 4rem; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }
+
+    .hero-content {
+      text-align: center;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 6px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-name .line1 { color: var(--text); }
+    .hero-name .line2 {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+      text-stroke: 1px var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+      font-weight: 300;
+      letter-spacing: 2px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-sub span { color: var(--accent); font-weight: 400; }
+
+    .hero-kanji {
+      font-size: 0.9rem;
+      color: rgba(0,212,255,0.3);
+      letter-spacing: 8px;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+    }
+    .btn {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      padding: 0.9rem 2.2rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    .btn-primary:hover {
+      background: white;
+      box-shadow: 0 0 30px rgba(0,212,255,0.6);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    }
+    .btn-outline:hover {
+      background: rgba(0,212,255,0.1);
+      box-shadow: 0 0 20px rgba(0,212,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 1s 1.2s forwards;
+    }
+    .scroll-hint span {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 4px;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 1.5s infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.2); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 6rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-header {
+      margin-bottom: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .section-num {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+    }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      opacity: 0.3;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.9;
+      margin-bottom: 1.2rem;
+      font-weight: 300;
+    }
+    .about-text p span { color: var(--accent); font-weight: 400; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .stat-card {
+      border: 1px solid var(--border);
+      padding: 1.5rem;
+      background: var(--bg2);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+    }
+    .stat-num {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    /* SKILLS */
+    .skills-section { background: var(--bg2); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .skill-card {
+      border: 1px solid var(--border);
+      padding: 2rem;
+      background: var(--bg);
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .skill-card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .skill-card-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--muted);
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      padding: 3rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+      color: var(--accent);
+      letter-spacing: 4px;
+    }
+    .footer-copy {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+
+    /* GLITCH DECORATION */
+    .glitch-bar {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), var(--accent3), transparent);
+      opacity: 0.5;
+      margin: 0 4rem;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float var(--dur) var(--delay) infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Stars -->
+  <div class="stars" id="stars"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">VTK<span>.</span>DEV</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="resume.html">Resume</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid-lines"></div>
+    <div class="hero-corner tl"></div>
+    <div class="hero-corner tr"></div>
+    <div class="hero-corner bl"></div>
+    <div class="hero-corner br"></div>
+
+    <div class="hero-content">
+      <p class="hero-tag">// INITIALIZING PORTFOLIO v1.0</p>
+      <h1 class="hero-name">
+        <div class="line1">VÕ THIÊN</div>
+        <div class="line2">KHÁNH</div>
+      </h1>
+      <p class="hero-sub">Student · <span>HCMUS</span> · Coder · Gamer</p>
+      <p class="hero-kanji">ヴォ・ティエン・カン</p>
+      <div class="hero-cta">
+        <a href="resume.html" class="btn btn-primary">VIEW RESUME</a>
+        <a href="#about" class="btn btn-outline">EXPLORE</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <div class="glitch-bar"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-text">
+        <div class="section-header">
+          <span class="section-num">01 //</span>
+          <h2 class="section-title">ABOUT</h2>
+          <div class="section-line"></div>
+        </div>
+        <p>Xin chào! Tôi là <span>Võ Thiên Khánh</span> — sinh viên năm nhất tại Trường Đại học Khoa học Tự nhiên, ĐHQG-HCM.</p>
+        <p>Đam mê với <span>lập trình</span>, mình thích xây dựng những thứ thú vị từ code — từ các thuật toán đến giao diện đẹp mắt.</p>
+        <p>Khi không code, mình dành thời gian chơi <span>game</span> và xem <span>anime</span> — nguồn cảm hứng bất tận cho mọi dự án sáng tạo.</p>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num">2025</div>
+          <div class="stat-label">INTAKE YEAR</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">LANGUAGES</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">HCMUS</div>
+          <div class="stat-label">UNIVERSITY</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">CURIOSITY</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glitch-bar"></div>
+
+  <!-- SKILLS -->
+  <section id="skills" class="skills-section">
+    <div class="section-header" style="max-width:1200px; margin:0 auto 4rem;">
+      <span class="section-num">02 //</span>
+      <h2 class="section-title">SKILLS</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-card-icon">⚔️</div>
+        <div class="skill-card-title">LANGUAGES</div>
+        <div class="skill-tags">
+          <span class="tag">C++</span>
+          <span class="tag">Python</span>
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">🛡️</div>
+        <div class="skill-card-title">TOOLS & ENV</div>
+        <div class="skill-tags">
+          <span class="tag">VS Code</span>
+          <span class="tag">Git</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">Terminal</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-icon">✨</div>
+        <div class="skill-card-title">SOFT SKILLS</div>
+        <div class="skill-tags">
+          <span class="tag">Problem Solving</span>
+          <span class="tag">Self-learning</span>
+          <span class="tag">Teamwork</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glitch-bar"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">VTK.DEV</div>
+    <div class="footer-copy">© 2025 VÕ THIÊN KHÁNH · HCMUS</div>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = (mx - 6) + 'px';
+      cursor.style.top = (my - 6) + 'px';
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      ring.style.left = (rx - 18) + 'px';
+      ring.style.top = (ry - 18) + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      const size = Math.random() * 2.5 + 0.5;
+      s.className = 'star';
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        --d:${2+Math.random()*4}s;
+        animation-delay:${Math.random()*4}s;
+      `;
+      starsEl.appendChild(s);
+    }
+  </script>
+</body>
+</html>
